@@ -1,3 +1,4 @@
+global using JwtAuthentication.Services.UserService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,6 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+//Use The user Service
+builder.Services.AddScoped<IUserService, UserService>();
+
+//This will provide the Http Context
+builder.Services.AddHttpContextAccessor();
+
+//This is used if you used Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -24,6 +33,7 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+//This will implement Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>{
         options.TokenValidationParameters = new TokenValidationParameters
@@ -45,7 +55,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+//Authentication is implemented before Authorization
 app.UseAuthentication();
 
 app.UseAuthorization();

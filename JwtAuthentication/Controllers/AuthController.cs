@@ -16,19 +16,24 @@ namespace JwtAuthentication.Controllers
         public static User user = new User();
 
         private readonly IConfiguration _configuration;
+        private readonly IUserService _userService;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
+            _userService = userService;
         }
 
         [HttpGet, Authorize]
         public ActionResult<object> GetMe() 
         {
-            var userName = User?.Identity?.Name;
-            var userName2 = User?.FindFirstValue(ClaimTypes.Name);
-            var role = User?.FindFirstValue(ClaimTypes.Role);
-            return Ok(new { userName, userName2, role });
+            var userName = _userService.GetMyName();
+
+            return Ok(userName);
+            //var userName = User?.Identity?.Name;
+            //var userName2 = User?.FindFirstValue(ClaimTypes.Name);
+            //var role = User?.FindFirstValue(ClaimTypes.Role);
+            //return Ok(new { userName, userName2, role });
         }
 
         [HttpPost("register")]
