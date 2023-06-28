@@ -22,7 +22,7 @@ namespace JwtAuthentication.Controllers
 
         
         /*[HttpGet(Name = "GetWeatherForecast"), AllowAnonymous] //AllowAnonymous allows access for everyone without authorization*/
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet(Name = "GetWeatherForecast"), Authorize(Roles = "Admin")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
